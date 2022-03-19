@@ -11,7 +11,7 @@ export default function LogInScreen(props) {
     const [password, setPassword] = useState('');
 
     useEffect(() => {
-        const unSubscribe = firebase.auth().onAuthStateChanged((user) => {
+        const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
             if(user){
                 navigation.reset({
                     index: 0,
@@ -19,7 +19,7 @@ export default function LogInScreen(props) {
                 });
             }
         });
-        return unSubscribe;
+        return unsubscribe;
     }, []);
 
     function handlePress(){
