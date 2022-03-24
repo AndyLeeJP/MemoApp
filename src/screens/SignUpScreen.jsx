@@ -3,13 +3,17 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'reac
 import firebase from 'firebase';
 
 import Button from "../components/Button";
+import Loading from "../components/Loading";
+import { translateErrors } from "../utils";
 
 export default function SignUpScreen(props) {
     const { navigation } = props;
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [isLoading, setLoading] = useState(false);
 
     function handlePress() {
+        setLoading(true);
         firebase.auth().createUserWithEmailAndPassword(email, password)
             .then((userCredential) => {
                 const { user } = userCredential;
@@ -21,13 +25,18 @@ export default function SignUpScreen(props) {
             })
             .catch((error) => {
                 console.log(error.code, error.message);
-                Alert.alert(error.code);
+                const errorMsg = translateErrors(error.code);
+                Alert.alert(errorMsg.title, errorMsg.description);
+            })
+            .then(() => {
+                setLoading(false);
             });
 
     }
 
     return (
         <View style={styles.container}>
+            <Loading isLoading={isLoading} />
             <View style={styles.inner}>
                 <Text style={styles.title}>Sign Up</Text>
                 <TextInput
